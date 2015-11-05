@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.Rendering;
-
-namespace Web.ViewModels.Manage
+﻿namespace ApiInator.Web.ViewModels.Manage
 {
+    using System.Collections.Generic;
+    using Microsoft.AspNet.Mvc.Rendering;
+
     public class ConfigureTwoFactorViewModel
     {
         public string SelectedProvider { get; set; }

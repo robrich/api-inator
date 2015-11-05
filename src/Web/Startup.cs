@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Authentication.Facebook;
-using Microsoft.AspNet.Authentication.Google;
-using Microsoft.AspNet.Authentication.MicrosoftAccount;
-using Microsoft.AspNet.Authentication.Twitter;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Diagnostics.Entity;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Data.Entity;
-using Microsoft.Dnx.Runtime;
-using Microsoft.Framework.Configuration;
-using Microsoft.Framework.DependencyInjection;
-using Microsoft.Framework.Logging;
-using Web.Models;
-using Web.Services;
+﻿namespace ApiInator.Web {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNet.Authentication.Facebook;
+    using Microsoft.AspNet.Authentication.Google;
+    using Microsoft.AspNet.Authentication.MicrosoftAccount;
+    using Microsoft.AspNet.Authentication.Twitter;
+    using Microsoft.AspNet.Builder;
+    using Microsoft.AspNet.Diagnostics.Entity;
+    using Microsoft.AspNet.Hosting;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.Data.Entity;
+    using Microsoft.Dnx.Runtime;
+    using Microsoft.Framework.Configuration;
+    using Microsoft.Framework.DependencyInjection;
+    using Microsoft.Framework.Logging;
+    using Web.Models;
+    using Web.Services;
 
-namespace Web
-{
     public class Startup
     {
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
@@ -38,7 +37,7 @@ namespace Web
                 builder.AddUserSecrets();
             }
             builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            this.Configuration = builder.Build();
         }
 
         public IConfigurationRoot Configuration { get; set; }

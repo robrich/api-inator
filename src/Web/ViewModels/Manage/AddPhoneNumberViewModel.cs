@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Web.ViewModels.Manage
+﻿namespace ApiInator.Web.ViewModels.Manage
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class AddPhoneNumberViewModel
     {
         [Required]
