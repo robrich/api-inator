@@ -1,4 +1,5 @@
 ﻿namespace ApiInator.Web.Controllers {
+    using ApiInator.Web.Services;
     using Microsoft.AspNet.Mvc;
 
     public class HomeController : Controller {

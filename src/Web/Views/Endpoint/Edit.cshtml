@@ -53,13 +53,15 @@
 
     <label asp-for="ResponseType" class="ccontrol-label"></label><br/>
     <select asp-for="ResponseType">
-        <option>Json</option>
+        <option>Static</option>
         <option>JavaScript</option>
         <option>CSharp</option>
     </select>
     <span asp-validation-for="ResponseType" class="text-danger"></span><br />
 
-    <label asp-for="ResponseContent" class="ccontrol-label"></label><br />
+    <label asp-for="ResponseContent" class="ccontrol-label"></label><br/>
+    <span>FRAGILE: C# methods must be public object GetResponse(HttpRequest req) {...}</span>
+    <span>FRAGILE: JavaScript methods must be function getResponse(req) {...}</span>
     <textarea asp-for="ResponseContent" class="form-control"></textarea>
     <span asp-validation-for="ResponseContent" class="text-danger"></span><br />
 

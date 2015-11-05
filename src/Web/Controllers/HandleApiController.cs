@@ -4,24 +4,41 @@
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using ApiInator.Web.Models;
+    using ApiInator.Web.Services;
     using Microsoft.AspNet.Hosting;
     using Microsoft.AspNet.Http;
     using Microsoft.AspNet.Mvc;
     using Microsoft.AspNet.Mvc.Infrastructure;
     using Microsoft.AspNet.Mvc.Routing;
     using Microsoft.AspNet.Routing;
+    using System.Linq;
+
+    // FRAGILE: this class is too big and duplicates code a lot
 
     public class HandleApiController : Controller {
         private readonly IEndpointRepository endpointRepository;
+        private readonly ICsharpCompileHelper csharpCompileHelper;
+        private readonly IJavaScriptCompileHelper javaScriptCompileHelper;
         private readonly IHostingEnvironment env;
 
         private readonly Regex subdomainRegex = new Regex("\\.api-inator\\.com$");
 
-        public HandleApiController(IEndpointRepository EndpointRepository, IHostingEnvironment Env) {
+        public HandleApiController(IEndpointRepository EndpointRepository, ICsharpCompileHelper CsharpCompileHelper, IJavaScriptCompileHelper JavaScriptCompileHelper, IHostingEnvironment Env) {
             if (EndpointRepository == null) {
                 throw new ArgumentNullException(nameof(EndpointRepository));
             }
+            if (CsharpCompileHelper == null) {
+                throw new ArgumentNullException(nameof(CsharpCompileHelper));
+            }
+            if (JavaScriptCompileHelper == null) {
+                throw new ArgumentNullException(nameof(JavaScriptCompileHelper));
+            }
+            if (Env == null) {
+                throw new ArgumentNullException(nameof(Env));
+            }
             this.endpointRepository = EndpointRepository;
+            this.csharpCompileHelper = CsharpCompileHelper;
+            this.javaScriptCompileHelper = JavaScriptCompileHelper;
             this.env = Env;
         }
 
@@ -42,9 +59,35 @@
 
             this.Response.ContentType = endpoint.ContentType;
             this.Response.StatusCode = endpoint.StatusCode;
-            return endpoint.ResponseContent;
-        }
 
+            RequestInfo requestInfo = new RequestInfo {
+                Method = method,
+                Path = url,
+                Headers = (
+                    from q in this.Request.Headers.Keys
+                    select new Tuple<string, string>(q, this.Request.Query[q])
+                ).ToDictionary(t => t.Item1, t => t.Item2),
+                Query = (
+                    from q in this.Request.Query.Keys
+                    select new Tuple<string,string>(q, this.Request.Query[q])
+                ).ToDictionary(t => t.Item1, t => t.Item2)
+            };
+
+            string response = null;
+            switch (endpoint.ResponseType) {
+                case ResponseType.Static:
+                    response = endpoint.ResponseContent;
+                    break;
+                case ResponseType.JavaScript:
+                    response = this.javaScriptCompileHelper.GetResult(requestInfo, endpoint.ResponseContent);
+                    break;
+                case ResponseType.CSharp:
+                    response = this.csharpCompileHelper.GetResult(Request, endpoint.ResponseContent);
+                    break;
+            }
+            
+            return response;
+        }
     }
 
     public class InatorConstraint : IRouteConstraint {
@@ -64,7 +107,7 @@
             this.env = Env;
         }
 
-        public bool Match(HttpContext httpContext, IRouter route, string routeKey, IDictionary<string,object> values, RouteDirection routeDirection) {
+        public bool Match(HttpContext httpContext, IRouter route, string routeKey, IDictionary<string, object> values, RouteDirection routeDirection) {
             string method = httpContext.Request.Method;
             string host = httpContext.Request.Host.ToString();
             string url = httpContext.Request.Path;
@@ -87,6 +130,5 @@
 
             return false;
         }
-
     }
 }

@@ -38,7 +38,7 @@
                 InatorId = id,
                 ContentType = "application/json",
                 Method = "GET",
-                ResponseType = ResponseType.Json,
+                ResponseType = ResponseType.Static,
                 StatusCode = 200,
                 Url = "/",
                 Inator = inator

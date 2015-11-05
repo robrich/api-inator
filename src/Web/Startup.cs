@@ -72,7 +72,10 @@
 
             services.AddTransient<IInatorRepository, InatorRepository>();
             services.AddTransient<IEndpointRepository, EndpointRepository>();
+            services.AddTransient<ICsharpCompileHelper, CsharpCompileHelper>();
+            services.AddTransient<IJavaScriptCompileHelper, JavaScriptCompileHelper>();
             services.AddTransient<InatorConstraint, InatorConstraint>();
+            
         }
 
         // Configure is called after ConfigureServices is called.

@@ -40,7 +40,7 @@ namespace ApiInator.Web.Models
     }
 
     public enum ResponseType {
-        Json = 1,
+        Static = 1,
         JavaScript = 2,
         CSharp = 3
     }
