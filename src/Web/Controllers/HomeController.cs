@@ -1,31 +1,23 @@
-﻿namespace ApiInator.Web.Controllers
-{
+﻿namespace ApiInator.Web.Controllers {
     using Microsoft.AspNet.Mvc;
 
-    public class HomeController : Controller
-    {
-        public IActionResult Index()
-        {
+    public class HomeController : Controller {
+
+        public IActionResult Index() {
             return this.View();
         }
 
-        public IActionResult About()
-        {
-            this.ViewData["Message"] = "Your application description page.";
-
+        public IActionResult About() {
             return this.View();
         }
 
-        public IActionResult Contact()
-        {
-            this.ViewData["Message"] = "Your contact page.";
-
-            return this.View();
-        }
-
-        public IActionResult Error()
-        {
+        public IActionResult Error() {
             return this.View("~/Views/Shared/Error.cshtml");
         }
+
+        public IActionResult NotFound() {
+            return this.View("NotFound");
+        }
+
     }
 }

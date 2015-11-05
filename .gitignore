@@ -210,5 +210,5 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
-src/Web/appsettings.json
+
 *.xproj.DotSettings
