@@ -21,13 +21,13 @@
         }
 
         public int Save(Inator Inator) {
-                if (Inator.InatorId > 0) {
-                    db.Inators.Attach(Inator);
-                    db.Entry(Inator).State = EntityState.Modified;
-                } else {
-                    db.Inators.Add(Inator);
-                }
-                return db.SaveChanges();
+            if (Inator.InatorId > 0) {
+                db.Inators.Attach(Inator);
+                db.Entry(Inator).State = EntityState.Modified;
+            } else {
+                db.Inators.Add(Inator);
+            }
+            return db.SaveChanges();
         }
 
         public List<Inator> GetAll() {
@@ -39,11 +39,11 @@
         }
 
         public Inator GetById(int InatorId) {
-                return (
-                    from i in db.Inators
-                    where i.InatorId == InatorId
-                    select i
-                ).FirstOrDefault();
+            return (
+                from i in db.Inators
+                where i.InatorId == InatorId
+                select i
+            ).FirstOrDefault();
         }
 
     }
