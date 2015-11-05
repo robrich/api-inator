@@ -30,6 +30,7 @@ namespace ApiInator.Web.Models
         [Required]
         [StringLength(400)]
         public string Url { get; set; }
+        public int StatusCode { get; set; }
         [Required]
         [StringLength(200)]
         public string ContentType { get; set; }

@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using ApiInator.Web.Controllers;
     using Microsoft.AspNet.Authentication.Facebook;
     using Microsoft.AspNet.Authentication.Google;
     using Microsoft.AspNet.Authentication.MicrosoftAccount;
@@ -46,6 +47,7 @@
         public void ConfigureServices(IServiceCollection services) {
 
             string connString = this.Configuration["Data:DefaultConnection:ConnectionString"];
+
             // Add Entity Framework services to the services container.
             services.AddEntityFramework()
                 .AddSqlServer()
@@ -70,10 +72,11 @@
 
             services.AddTransient<IInatorRepository, InatorRepository>();
             services.AddTransient<IEndpointRepository, EndpointRepository>();
+            services.AddTransient<InatorConstraint, InatorConstraint>();
         }
 
         // Configure is called after ConfigureServices is called.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, InatorConstraint inatorConstraint)
         {
             loggerFactory.MinimumLevel = LogLevel.Information;
             loggerFactory.AddConsole();
@@ -129,11 +132,19 @@
             //});
 
             // Add MVC to the request pipeline.
-            app.UseMvc(routes =>
-            {
+            app.UseMvc(routes => {
+
+                routes.MapRoute(
+                    name: "api",
+                    template: "{*pathInfo}",
+                    defaults: new {controller = "HandleApi", action="Index"},
+                    constraints: new { pathInfo = inatorConstraint } // FRAGILE: matches unused parameter in controller
+                );
+
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}"
+                );
 
                 // Uncomment the following line to add a route for porting Web API 2 controllers.
                 // routes.MapWebApiRoute("DefaultApi", "api/{controller}/{id?}");

@@ -9,6 +9,7 @@
         List<Endpoint> GetByInatorId(int InatorId);
         Endpoint GetById(int EndpointId);
         Endpoint GetByIdInclude(int EndpointId);
+        Endpoint GetMatch(string Subdomain, string Method, string Url);
     }
 
     public class EndpointRepository : IEndpointRepository {
@@ -52,6 +53,17 @@
             return (
                 from i in db.Endpoints.Include(e => e.Inator)
                 where i.EndpointId == EndpointId
+                select i
+            ).FirstOrDefault();
+        }
+
+        // TODO: cache this heavily
+        public Endpoint GetMatch(string Subdomain, string Method, string Url) {
+             return (
+                from i in db.Endpoints.Include(e => e.Inator)
+                where i.Inator.Subdomain == Subdomain
+                && i.Method == Method
+                && i.Url == Url
                 select i
             ).FirstOrDefault();
         }

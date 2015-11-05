@@ -39,6 +39,7 @@
                 ContentType = "application/json",
                 Method = "GET",
                 ResponseType = ResponseType.Json,
+                StatusCode = 200,
                 Url = "/",
                 Inator = inator
             };

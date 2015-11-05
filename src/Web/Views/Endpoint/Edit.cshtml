@@ -19,9 +19,19 @@
         <option>GET</option>
         <option>POST</option>
         <option>PUT</option>
-        <option>DELETE</option>
         <option>HEAD</option>
+        <option>TRACE</option>
+        <option>DELETE</option>
+        <option>SEARCH</option>
+        <option>CONNECT</option>
+        <option>PROPFIND</option>
+        <option>PROPPATCH</option>
         <option>PATCH</option>
+        <option>MKCOL</option>
+        <option>COPY</option>
+        <option>MOVE</option>
+        <option>LOCK</option>
+        <option>UNLOCK</option>
         <option>OPTIONS</option>
     </select>
     <span asp-validation-for="Method" class="text-danger"></span><br />
@@ -32,6 +42,10 @@
         <input asp-for="Url" class="form-control" placeholder="/" />
     </div>
     <span asp-validation-for="Url" class="text-danger"></span><br />
+    
+    <label asp-for="StatusCode" class="ccontrol-label"></label><br />
+    <input type="number" asp-for="StatusCode" class="form-control" placeholder="200" />
+    <span asp-validation-for="StatusCode" class="text-danger"></span><br/>
 
     <label asp-for="ContentType" class="ccontrol-label"></label><br />
     <input asp-for="ContentType" class="form-control" placeholder="application/json" />
