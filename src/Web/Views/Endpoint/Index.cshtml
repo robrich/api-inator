@@ -1,0 +1,35 @@
+﻿@model Inator
+
+@{
+    ViewBag.Title = "Endpoints";
+}
+
+<h1>@ViewBag.Title</h1>
+
+@if (!Model.Endpoints.Any()) {
+    <p>No endpoints for this enator</p>
+    <p><a asp-controller="Endpoint" asp-action="Add" asp-route-id="@Model.InatorId"><i class="fa fa-plus"></i> Add</a></p>
+} else {
+    <table class="table">
+        <thead>
+        <tr>
+            <th><a asp-controller="Endpoint" asp-action="Add" asp-route-id="@Model.InatorId"><i class="fa fa-plus"></i> Add</a></th>
+            <th>Id</th>
+            <th>Subdomain</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (Endpoint endpoint in Model.Endpoints) {
+            <tr>
+                <td>
+                    <a asp-controller="Endpoint" asp-action="Edit" asp-route-id="@endpoint.EndpointId"><i class="fa fa-pencil"></i> Edit</a>
+                </td>
+                <td>@endpoint.EndpointId</td>
+                <td>@endpoint.Method</td>
+                <td>@endpoint.Url</td>
+                <td>@endpoint.ResponseType</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

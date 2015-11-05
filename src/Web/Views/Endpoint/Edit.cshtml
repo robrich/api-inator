@@ -1,0 +1,53 @@
+﻿@model Endpoint
+
+@{
+    string title = Model.EndpointId > 0 ? "Edit " + Model.EndpointId : "Add new Endpoint";
+    title += " for " + Model.Inator.Subdomain;
+    ViewBag.Title = title;
+}
+
+<a asp-controller="Endpoint" asp-action="Index" asp-route-id="@Model.InatorId"><i class="fa fa-chevron-left"></i> Back to Index</a>
+
+<h2>@ViewBag.Title</h2>
+
+<form asp-controller="Endpoint" asp-action="Edit" method="post" role="form">
+    <div asp-validation-summary="ValidationSummary.All" class="text-danger"></div>
+    <input type="hidden" name="InatorId" asp-for="InatorId" />
+
+    <label asp-for="Method" class="ccontrol-label"></label><br/>
+    <select asp-for="Method" class="form-control">
+        <option>GET</option>
+        <option>POST</option>
+        <option>PUT</option>
+        <option>DELETE</option>
+        <option>HEAD</option>
+        <option>PATCH</option>
+        <option>OPTIONS</option>
+    </select>
+    <span asp-validation-for="Method" class="text-danger"></span><br />
+
+    <label asp-for="Url" class="ccontrol-label"></label><br/>
+    <div class="input-group">
+        <span class="input-group-addon">http://@(Model.Inator.Subdomain).api-inator.com</span>
+        <input asp-for="Url" class="form-control" placeholder="/" />
+    </div>
+    <span asp-validation-for="Url" class="text-danger"></span><br />
+
+    <label asp-for="ContentType" class="ccontrol-label"></label><br />
+    <input asp-for="ContentType" class="form-control" placeholder="application/json" />
+    <span asp-validation-for="ContentType" class="text-danger"></span><br />
+
+    <label asp-for="ResponseType" class="ccontrol-label"></label><br/>
+    <select asp-for="ResponseType">
+        <option>Json</option>
+        <option>JavaScript</option>
+        <option>CSharp</option>
+    </select>
+    <span asp-validation-for="ResponseType" class="text-danger"></span><br />
+
+    <label asp-for="ResponseContent" class="ccontrol-label"></label><br />
+    <textarea asp-for="ResponseContent" class="form-control"></textarea>
+    <span asp-validation-for="ResponseContent" class="text-danger"></span><br />
+
+    <button type="submit" class="btn btn-default">Save</button>
+</form>

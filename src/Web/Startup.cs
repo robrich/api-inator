@@ -69,6 +69,7 @@
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddTransient<IInatorRepository, InatorRepository>();
+            services.AddTransient<IEndpointRepository, EndpointRepository>();
         }
 
         // Configure is called after ConfigureServices is called.

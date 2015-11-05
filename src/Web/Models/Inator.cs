@@ -25,6 +25,9 @@ namespace ApiInator.Web.Models
         public int InatorId { get; set; }
         public Inator Inator { get; set; }
         [Required]
+        [StringLength(10)]
+        public string Method { get; set; }
+        [Required]
         [StringLength(400)]
         public string Url { get; set; }
         [Required]
