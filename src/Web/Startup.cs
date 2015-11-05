@@ -43,13 +43,14 @@
         public IConfigurationRoot Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services) {
+
+            string connString = this.Configuration["Data:DefaultConnection:ConnectionString"];
             // Add Entity Framework services to the services container.
             services.AddEntityFramework()
                 .AddSqlServer()
-                .AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+                .AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(connString))
+                .AddDbContext<ApiInatorDbContext>(o => o.UseSqlServer(connString));
 
             // Add Identity services to the services container.
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -66,6 +67,8 @@
             // Register application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddTransient<IInatorRepository, InatorRepository>();
         }
 
         // Configure is called after ConfigureServices is called.

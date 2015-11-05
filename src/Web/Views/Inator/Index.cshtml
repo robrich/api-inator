@@ -1,0 +1,37 @@
+﻿@model List<Inator>
+
+@{
+    ViewBag.Title = "Inators";
+}
+
+<h1>@ViewBag.Title</h1>
+
+<p>
+    <a asp-controller="Inator" asp-action="Edit"><i class="fa fa - plus"></i> Add</a>
+</p>
+
+@if (Model == null || Model.Count < 1) {
+    <p>No inators</p>
+} else {
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Id</th>
+            <th>Subdomain</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var inator in Model) {
+            <tr>
+                <td>
+                    @Html.ActionLink("<i class=\"fa fa-pencil\"></i> Edit", "Edit", new { id = inator.InatorId }) |
+                    @Html.ActionLink("Endpoints", "Index", "Endpoint", new { id = inator.InatorId })
+                </td>
+                <td>@inator.InatorId</td>
+                <td>@inator.Subdomain</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

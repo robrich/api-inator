@@ -3,10 +3,11 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - Web</title>
+        <title>@ViewData["Title"] - API-Inator</title>
 
         <environment names="Development">
-            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+            <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
+            <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css"/>
             <link rel="stylesheet" href="~/lib/bootstrap-touch-carousel/dist/css/bootstrap-touch-carousel.css" />
             <link rel="stylesheet" href="~/css/site.css" />
         </environment>
@@ -14,6 +15,7 @@
             <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.0.0/css/bootstrap.min.css"
                   asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
                   asp-fallback-test-class="hidden" asp-fallback-test-property="visibility" asp-fallback-test-value="hidden" />
+            <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
             <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap-touch-carousel/0.8.0/css/bootstrap-touch-carousel.css"
                   asp-fallback-href="~/lib/bootstrap-touch-carousel/css/bootstrap-touch-carousel.css"
                   asp-fallback-test-class="carousel-caption" asp-fallback-test-property="display" asp-fallback-test-value="none" />
@@ -34,7 +36,7 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Home" asp-action="About">About</a></li>
+                        <li><a asp-controller="Inator" asp-action="Index">Inators</a></li>
                         <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
                     </ul>
                     @await Html.PartialAsync("_LoginPartial")
@@ -45,7 +47,7 @@
             @RenderBody()
             <hr />
             <footer>
-                <p>&copy; 2015 - Web</p>
+                <p>&copy; 2015 - API-Inator</p>
             </footer>
         </div>
 
