@@ -21,7 +21,7 @@
         }
 
         public int Save(Inator Inator) {
-                if (Inator.UserId > 0) {
+                if (Inator.InatorId > 0) {
                     db.Inators.Attach(Inator);
                     db.Entry(Inator).State = EntityState.Modified;
                 } else {

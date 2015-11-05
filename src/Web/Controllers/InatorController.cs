@@ -21,15 +21,18 @@
             return this.View(inators);
         }
 
+        [HttpGet]
         public IActionResult Edit(int id) {
             Inator inator = this.inatorRepository.GetById(id) ?? new Inator(); // TODO: for this user
             return this.View(inator);
         }
 
+        [HttpPost]
         public IActionResult Edit(int id, Inator Inator) {
             if (!this.ModelState.IsValid) {
                 return this.View(Inator); // fix your errors
             }
+            Inator.InatorId = id; // just in case
             this.inatorRepository.Save(Inator);
             return RedirectToAction("Index");
         }
