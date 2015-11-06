@@ -1,8 +1,9 @@
-﻿namespace ApiInator.Web.Models {
+﻿namespace ApiInator.Web.Repositories {
     using System;
     using System.Collections.Generic;
-    using Microsoft.Data.Entity;
     using System.Linq;
+    using ApiInator.Web.Models;
+    using Microsoft.Data.Entity;
 
     public interface IInatorRepository {
         int Save(Inator Inator);
@@ -23,12 +24,12 @@
 
         public int Save(Inator Inator) {
             if (Inator.InatorId > 0) {
-                db.Inators.Attach(Inator);
-                db.Entry(Inator).State = EntityState.Modified;
+                this.db.Inators.Attach(Inator);
+                this.db.Entry(Inator).State = EntityState.Modified;
             } else {
-                db.Inators.Add(Inator);
+                this.db.Inators.Add(Inator);
             }
-            return db.SaveChanges();
+            return this.db.SaveChanges();
         }
 
         public Inator GetById(int InatorId) {
@@ -36,7 +37,7 @@
                 return null;
             }
             return (
-                from i in db.Inators
+                from i in this.db.Inators
                 where i.InatorId == InatorId
                 select i
             ).FirstOrDefault();
@@ -44,7 +45,7 @@
 
         public List<Inator> GetAll() {
             return (
-                from i in db.Inators
+                from i in this.db.Inators
                 orderby i.Subdomain
                 select i
             ).ToList();
@@ -55,7 +56,7 @@
                 return new List<Inator>();
             }
             return (
-                from i in db.Inators
+                from i in this.db.Inators
                 where i.UserId == UserId
                 orderby i.Subdomain
                 select i

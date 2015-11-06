@@ -1,8 +1,9 @@
-﻿namespace ApiInator.Web.Models {
+﻿namespace ApiInator.Web.Repositories {
     using System;
     using System.Collections.Generic;
-    using Microsoft.Data.Entity;
     using System.Linq;
+    using ApiInator.Web.Models;
+    using Microsoft.Data.Entity;
 
     public interface IEndpointRepository {
         int Save(Endpoint Endpoint);
@@ -24,12 +25,12 @@
 
         public int Save(Endpoint Endpoint) {
             if (Endpoint.EndpointId > 0) {
-                db.Endpoints.Attach(Endpoint);
-                db.Entry(Endpoint).State = EntityState.Modified;
+                this.db.Endpoints.Attach(Endpoint);
+                this.db.Entry(Endpoint).State = EntityState.Modified;
             } else {
-                db.Endpoints.Add(Endpoint);
+                this.db.Endpoints.Add(Endpoint);
             }
-            return db.SaveChanges();
+            return this.db.SaveChanges();
         }
 
         public List<Endpoint> GetByInatorId(int InatorId) {
@@ -37,7 +38,7 @@
                 return null;
             }
             return (
-                from i in db.Endpoints
+                from i in this.db.Endpoints
                 where i.InatorId == InatorId
                 orderby i.Url
                 select i
@@ -49,7 +50,7 @@
                 return null;
             }
             return (
-                from i in db.Endpoints
+                from i in this.db.Endpoints
                 where i.EndpointId == EndpointId
                 select i
             ).FirstOrDefault();
@@ -60,7 +61,7 @@
                 return null;
             }
             return (
-                from i in db.Endpoints.Include(e => e.Inator)
+                from i in this.db.Endpoints.Include(e => e.Inator)
                 where i.EndpointId == EndpointId
                 select i
             ).FirstOrDefault();
@@ -72,7 +73,7 @@
                 return null;
             }
             return (
-                from i in db.Endpoints.Include(e => e.Inator)
+                from i in this.db.Endpoints.Include(e => e.Inator)
                 where i.Inator.Subdomain == Subdomain
                 && i.Method == Method
                 && i.Url == Url

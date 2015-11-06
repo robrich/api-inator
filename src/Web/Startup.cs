@@ -7,6 +7,7 @@
     using System.Security.Claims;
     using System.Threading.Tasks;
     using ApiInator.Web.Controllers;
+    using ApiInator.Web.Repositories;
     using Microsoft.AspNet.Authentication.Cookies;
     using Microsoft.AspNet.Authentication.OAuth;
     using Microsoft.AspNet.Builder;

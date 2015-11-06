@@ -1,8 +1,8 @@
-﻿namespace ApiInator.Web.Models {
+﻿namespace ApiInator.Web.Repositories {
     using System;
-    using System.Collections.Generic;
-    using Microsoft.Data.Entity;
     using System.Linq;
+    using ApiInator.Web.Models;
+    using Microsoft.Data.Entity;
 
     public interface IUserRepository {
         int Save(User User);
@@ -22,12 +22,12 @@
 
         public int Save(User User) {
             if (User.UserId > 0) {
-                db.Users.Attach(User);
-                db.Entry(User).State = EntityState.Modified;
+                this.db.Users.Attach(User);
+                this.db.Entry(User).State = EntityState.Modified;
             } else {
-                db.Users.Add(User);
+                this.db.Users.Add(User);
             }
-            return db.SaveChanges();
+            return this.db.SaveChanges();
         }
         
         public User GetById(int UserId) {
@@ -35,7 +35,7 @@
                 return null;
             }
             return (
-                from i in db.Users
+                from i in this.db.Users
                 where i.UserId == UserId
                 select i
             ).FirstOrDefault();
@@ -46,7 +46,7 @@
                 return null;
             }
             return (
-                from i in db.Users
+                from i in this.db.Users
                 where i.GitHubId == GitHubId
                 select i
             ).FirstOrDefault();

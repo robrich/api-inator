@@ -13,6 +13,7 @@
     using Microsoft.AspNet.Routing;
     using System.Linq;
     using System.Threading.Tasks;
+    using ApiInator.Web.Repositories;
 
     // FRAGILE: this class is too big and duplicates code a lot
 

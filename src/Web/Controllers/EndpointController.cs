@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using ApiInator.Web.Models;
+    using ApiInator.Web.Repositories;
     using ApiInator.Web.Services;
     using Microsoft.AspNet.Authorization;
     using Microsoft.AspNet.Mvc;

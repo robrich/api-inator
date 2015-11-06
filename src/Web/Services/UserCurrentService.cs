@@ -3,6 +3,7 @@
     using System.Security.Claims;
     using ApiInator.Web.Helpers;
     using ApiInator.Web.Models;
+    using ApiInator.Web.Repositories;
     using Microsoft.AspNet.Http;
     using Microsoft.AspNet.Mvc.Rendering;
 
