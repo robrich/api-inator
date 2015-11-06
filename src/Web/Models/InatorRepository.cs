@@ -6,8 +6,9 @@
 
     public interface IInatorRepository {
         int Save(Inator Inator);
-        List<Inator> GetAll();
         Inator GetById(int InatorId);
+        List<Inator> GetAll();
+        List<Inator> GetByUserId(int UserId);
     }
 
     public class InatorRepository : IInatorRepository {
@@ -30,6 +31,17 @@
             return db.SaveChanges();
         }
 
+        public Inator GetById(int InatorId) {
+            if (InatorId < 1) {
+                return null;
+            }
+            return (
+                from i in db.Inators
+                where i.InatorId == InatorId
+                select i
+            ).FirstOrDefault();
+        }
+
         public List<Inator> GetAll() {
             return (
                 from i in db.Inators
@@ -38,12 +50,16 @@
             ).ToList();
         }
 
-        public Inator GetById(int InatorId) {
+        public List<Inator> GetByUserId(int UserId) {
+            if (UserId < 1) {
+                return new List<Inator>();
+            }
             return (
                 from i in db.Inators
-                where i.InatorId == InatorId
+                where i.UserId == UserId
+                orderby i.Subdomain
                 select i
-            ).FirstOrDefault();
+            ).ToList();
         }
 
     }

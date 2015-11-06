@@ -71,6 +71,7 @@
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IInatorRepository, InatorRepository>();
             services.AddTransient<IEndpointRepository, EndpointRepository>();
+            services.AddTransient<IUserCurrentService, UserCurrentService>();
             services.AddTransient<ICsharpCompileHelper, CsharpCompileHelper>();
             services.AddTransient<IJavaScriptCompileHelper, JavaScriptCompileHelper>();
             services.AddTransient<InatorConstraint, InatorConstraint>();
