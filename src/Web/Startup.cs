@@ -2,22 +2,24 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using ApiInator.Web.Controllers;
-    using Microsoft.AspNet.Authentication.Facebook;
-    using Microsoft.AspNet.Authentication.Google;
-    using Microsoft.AspNet.Authentication.MicrosoftAccount;
-    using Microsoft.AspNet.Authentication.Twitter;
+    using Microsoft.AspNet.Authentication.Cookies;
+    using Microsoft.AspNet.Authentication.OAuth;
     using Microsoft.AspNet.Builder;
     using Microsoft.AspNet.Diagnostics.Entity;
     using Microsoft.AspNet.Hosting;
-    using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.AspNet.Http;
     using Microsoft.AspNet.NodeServices;
     using Microsoft.Data.Entity;
     using Microsoft.Dnx.Runtime;
     using Microsoft.Framework.Configuration;
     using Microsoft.Framework.DependencyInjection;
     using Microsoft.Framework.Logging;
+    using Newtonsoft.Json.Linq;
     using Web.Models;
     using Web.Services;
 
@@ -52,13 +54,10 @@
             // Add Entity Framework services to the services container.
             services.AddEntityFramework()
                 .AddSqlServer()
-                .AddDbContext<ApplicationDbContext>(o => o.UseSqlServer(connString))
                 .AddDbContext<ApiInatorDbContext>(o => o.UseSqlServer(connString));
 
             // Add Identity services to the services container.
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddAuthentication(options => options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme);
 
             // Add MVC services to the services container.
             services.AddMvc();
@@ -69,10 +68,7 @@
 
             services.AddNodeServices();
 
-            // Register application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
-
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IInatorRepository, InatorRepository>();
             services.AddTransient<IEndpointRepository, EndpointRepository>();
             services.AddTransient<ICsharpCompileHelper, CsharpCompileHelper>();
@@ -82,7 +78,7 @@
         }
 
         // Configure is called after ConfigureServices is called.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, InatorConstraint inatorConstraint)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IUserRepository userRepository, InatorConstraint inatorConstraint)
         {
             loggerFactory.MinimumLevel = LogLevel.Information;
             loggerFactory.AddConsole();
@@ -110,33 +106,83 @@
             // Add static files to the request pipeline.
             app.UseStaticFiles();
 
-            // Add cookie-based authentication to the request pipeline.
-            app.UseIdentity();
+            app.UseCookieAuthentication(options => {
+                options.AutomaticAuthentication = true;
+                //options.AutomaticChallenge = true;
+                options.LoginPath = new PathString("/login");
+            });
 
-            // Add and configure the options for authentication middleware to the request pipeline.
-            // You can add options for middleware as shown below.
-            // For more information see http://go.microsoft.com/fwlink/?LinkID=532715
-            //app.UseFacebookAuthentication(options =>
-            //{
-            //    options.AppId = Configuration["Authentication:Facebook:AppId"];
-            //    options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            //});
-            //app.UseGoogleAuthentication(options =>
-            //{
-            //    options.ClientId = Configuration["Authentication:Google:ClientId"];
-            //    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-            //});
-            //app.UseMicrosoftAccountAuthentication(options =>
-            //{
-            //    options.ClientId = Configuration["Authentication:MicrosoftAccount:ClientId"];
-            //    options.ClientSecret = Configuration["Authentication:MicrosoftAccount:ClientSecret"];
-            //});
-            //app.UseTwitterAuthentication(options =>
-            //{
-            //    options.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
-            //    options.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
-            //});
+            string githubClientId = this.Configuration["GitHubClientId"];
+            string githubClientSecret = this.Configuration["GitHubClientSecret"];
 
+            // Add GitHub Authentication
+            // http://www.jerriepelser.com/blog/introduction-to-aspnet5-generic-oauth-provider
+            // https://github.com/aspnet/Security/blob/dev/samples/SocialSample/Startup.cs
+            app.UseOAuthAuthentication(new OAuthOptions {
+                AuthenticationScheme = "GitHub",
+                DisplayName = "Github",
+                ClientId = githubClientId,
+                ClientSecret = githubClientSecret,
+                CallbackPath = new PathString("/signin-github"),
+                AuthorizationEndpoint = "https://github.com/login/oauth/authorize",
+                TokenEndpoint = "https://github.com/login/oauth/access_token",
+                SaveTokensAsClaims = false,
+                UserInformationEndpoint = "https://api.github.com/user",
+                // Retrieving user information is unique to each provider.
+                Events = new OAuthEvents {
+                    OnCreatingTicket = async context => {
+                        // Get the GitHub user
+
+                        var request = new HttpRequestMessage(HttpMethod.Get, context.Options.UserInformationEndpoint);
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", context.AccessToken);
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                        var response = await context.Backchannel.SendAsync(request, context.HttpContext.RequestAborted);
+                        response.EnsureSuccessStatusCode();
+
+                        var githubUser = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+                        var id = githubUser.Value<int>("id");
+                        if (id < 1) {
+                            throw new ArgumentNullException("id");
+                        }
+                        var login = githubUser.Value<string>("login");
+                        var name = githubUser.Value<string>("name");
+                        var avitarUrl = githubUser.Value<string>("avatar_url");
+
+                        User user = userRepository.GetByGitHubId(id) ?? new User { GitHubId = id };
+                        user.Login = login;
+                        user.Name = name;
+                        user.AvitarUrl = avitarUrl;
+                        userRepository.Save(user);
+
+                        context.Identity.AddClaim(new Claim(
+                            ClaimTypes.NameIdentifier, user.UserId.ToString()
+                        ));
+
+                        if (!string.IsNullOrEmpty(name)) {
+                            context.Identity.AddClaim(new Claim(
+                                "urn:github:name", name,
+                                ClaimValueTypes.String, context.Options.ClaimsIssuer
+                            ));
+                        }
+                        if (!string.IsNullOrEmpty(avitarUrl)) {
+                            context.Identity.AddClaim(new Claim(
+                                "urn:github:avitar", avitarUrl,
+                                ClaimValueTypes.String, context.Options.ClaimsIssuer
+                            ));
+                        }
+
+                        if (user.IsAdmin) {
+                            context.Identity.AddClaim(new Claim(
+                                ClaimTypes.Role, "admin"
+                            ));
+                        }
+                        
+                    }
+                }
+            });
+            
             // Add MVC to the request pipeline.
             app.UseMvc(routes => {
 

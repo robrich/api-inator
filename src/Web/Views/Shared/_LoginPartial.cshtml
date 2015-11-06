@@ -1,20 +1,14 @@
-﻿@using System.Security.Claims
-
-@if (User.Identity.IsAuthenticated)
-{
-    <form asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a asp-controller="Manage" asp-action="Index" title="Manage">Hello @User.GetUserName()!</a>
-            </li>
-            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-        </ul>
-    </form>
-}
-else
-{
-    <ul class="nav navbar-nav navbar-right">
-        <li><a asp-controller="Account" asp-action="Register">Register</a></li>
-        <li><a asp-controller="Account" asp-action="Login">Log in</a></li>
-    </ul>
-}
+﻿<ul class="nav navbar-nav navbar-right">
+    @if (User.Identity.IsAuthenticated) {
+        string name = Html.CurrentUserName() ?? "GitHub User";
+        string avitar = Html.CurrentUserAvitarUrl();
+        <li><a asp-controller="Inator" asp-action="Index">Manage Inators</a></li>
+        <li><a asp-controller="Inator" asp-action="Index" title="Inators">Hello @name!</a></li>
+        <li><a asp-controller="Login" asp-action="Logout" title="Log out">Log out</a></li>
+        if (!string.IsNullOrEmpty(avitar)) {
+            <li><img src="@avitar" alt="@name" class="avitar"></li>
+        }
+    } else {
+        <li><a asp-controller="Login" asp-action="Index"><i class="fa fa-github"></i> Log in with GitHub</a></li>
+    }
+</ul>
