@@ -25,9 +25,10 @@
     "Microsoft.Framework.Configuration.UserSecrets": "1.0.0-beta8",
     "Microsoft.Framework.Logging": "1.0.0-beta8",
     "Microsoft.Framework.Logging.Console": "1.0.0-beta8",
-    "Microsoft.Framework.Logging.Debug" : "1.0.0-beta8",
+    "Microsoft.Framework.Logging.Debug": "1.0.0-beta8",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-beta8",
-    "Microsoft.CodeAnalysis.CSharp": "1.0.0"
+    "Microsoft.CodeAnalysis.CSharp": "1.0.0",
+    "Microsoft.AspNet.NodeServices": "1.0.0-alpha6"
   },
 
   "commands": {

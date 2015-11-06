@@ -3,11 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;
     using System.IO;
     using System.Reflection;
     using System.Text;
-    using ApiInator.Web.Models;
     using Microsoft.AspNet.Http;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -44,7 +42,7 @@ ResponseContent+
                 syntaxTrees: new[] {syntaxTree},
                 references: references,
                 options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-                );
+            );
 
             Assembly assembly = null;
             using (var ms = new MemoryStream()) {

@@ -12,6 +12,7 @@
     using Microsoft.AspNet.Diagnostics.Entity;
     using Microsoft.AspNet.Hosting;
     using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.AspNet.NodeServices;
     using Microsoft.Data.Entity;
     using Microsoft.Dnx.Runtime;
     using Microsoft.Framework.Configuration;
@@ -65,6 +66,8 @@
             // Uncomment the following line to add Web API services which makes it easier to port Web API 2 controllers.
             // You will also need to add the Microsoft.AspNet.Mvc.WebApiCompatShim package to the 'dependencies' section of project.json.
             // services.AddWebApiConventions();
+
+            services.AddNodeServices();
 
             // Register application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

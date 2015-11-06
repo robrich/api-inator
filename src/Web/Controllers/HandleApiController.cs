@@ -12,6 +12,7 @@
     using Microsoft.AspNet.Mvc.Routing;
     using Microsoft.AspNet.Routing;
     using System.Linq;
+    using System.Threading.Tasks;
 
     // FRAGILE: this class is too big and duplicates code a lot
 
@@ -42,7 +43,7 @@
             this.env = Env;
         }
 
-        public string Index(string pathInfo/*FRAGILE: matches route setup */) {
+        public async Task<string> Index(string pathInfo/*FRAGILE: matches route setup */) {
 
             // TODO: how to pass the found Endpoint from the route constraint to the controller?
 
@@ -59,27 +60,26 @@
 
             this.Response.ContentType = endpoint.ContentType;
             this.Response.StatusCode = endpoint.StatusCode;
-
-            RequestInfo requestInfo = new RequestInfo {
-                Method = method,
-                Path = url,
-                Headers = (
-                    from q in this.Request.Headers.Keys
-                    select new Tuple<string, string>(q, this.Request.Query[q])
-                ).ToDictionary(t => t.Item1, t => t.Item2),
-                Query = (
-                    from q in this.Request.Query.Keys
-                    select new Tuple<string,string>(q, this.Request.Query[q])
-                ).ToDictionary(t => t.Item1, t => t.Item2)
-            };
-
+            
             string response = null;
             switch (endpoint.ResponseType) {
                 case ResponseType.Static:
                     response = endpoint.ResponseContent;
                     break;
                 case ResponseType.JavaScript:
-                    response = this.javaScriptCompileHelper.GetResult(requestInfo, endpoint.ResponseContent);
+                    RequestInfo requestInfo = new RequestInfo {
+                        Method = method,
+                        Path = url,
+                        Headers = (
+                            from q in this.Request.Headers.Keys
+                            select new Tuple<string, string>(q, this.Request.Query[q])
+                        ).ToDictionary(t => t.Item1, t => t.Item2),
+                        Query = (
+                            from q in this.Request.Query.Keys
+                            select new Tuple<string, string>(q, this.Request.Query[q])
+                        ).ToDictionary(t => t.Item1, t => t.Item2)
+                    };
+                    response = await this.javaScriptCompileHelper.GetResult(requestInfo, endpoint.EndpointId, endpoint.ResponseContent);
                     break;
                 case ResponseType.CSharp:
                     response = this.csharpCompileHelper.GetResult(Request, endpoint.ResponseContent);
