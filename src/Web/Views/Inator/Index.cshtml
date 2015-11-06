@@ -14,7 +14,6 @@
         <thead>
         <tr>
             <th><a asp-controller="Inator" asp-action="Edit"><i class="fa fa-plus"></i> Add</a></th>
-            <th>Id</th>
             <th>Subdomain</th>
         </tr>
         </thead>
@@ -25,8 +24,7 @@
                     <a asp-controller="Inator" asp-action="Edit" asp-route-id="@inator.InatorId"><i class="fa fa-pencil"></i> Edit</a> &nbsp; &nbsp;
                     <a asp-controller="Endpoint" asp-action="Index" asp-route-id="@inator.InatorId"><i class="fa fa-map-pin"></i> Endpoints</a>
                 </td>
-                <td>@inator.InatorId</td>
-                <td>@inator.Subdomain</td>
+                <td>http://@(inator.Subdomain).api-inator.com/</td>
             </tr>
         }
         </tbody>

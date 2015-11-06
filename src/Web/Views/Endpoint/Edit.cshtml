@@ -1,12 +1,12 @@
 ﻿@model Endpoint
 
 @{
-    string title = Model.EndpointId > 0 ? "Edit " + Model.EndpointId : "Add new Endpoint";
-    title += " for " + Model.Inator.Subdomain;
+    string title = Model.EndpointId > 0 ? "Edit" : "Add new";
+    title += " endpoint for http://" + Model.Inator.Subdomain+".api-inator.com/";
     ViewBag.Title = title;
 }
 
-<a asp-controller="Endpoint" asp-action="Index" asp-route-id="@Model.InatorId"><i class="fa fa-chevron-left"></i> Back to Index</a>
+<a asp-controller="Endpoint" asp-action="Index" asp-route-id="@Model.InatorId"><i class="fa fa-chevron-left"></i> Back to Endpoint List</a>
 
 <h2>@ViewBag.Title</h2>
 

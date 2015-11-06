@@ -1,8 +1,11 @@
 ﻿@model Inator
 
 @{
-    ViewBag.Title = "Endpoints for http://"+Model.Subdomain+".api-inator.com";
+    string domain = "http://" + Model.Subdomain + ".api-inator.com";
+    ViewBag.Title = "Endpoints for "+domain+"/";
 }
+
+<a asp-controller="Inator" asp-action="Index"><i class="fa fa-chevron-left"></i> Back to Inators</a>
 
 <h1>@ViewBag.Title</h1>
 
@@ -14,9 +17,9 @@
         <thead>
         <tr>
             <th><a asp-controller="Endpoint" asp-action="Add" asp-route-id="@Model.InatorId"><i class="fa fa-plus"></i> Add</a></th>
-            <th>Id</th>
             <th>Method</th>
             <th>Url</th>
+            <th>Status Code</th>
             <th>Response Type</th>
         </tr>
         </thead>
@@ -26,9 +29,9 @@
                 <td>
                     <a asp-controller="Endpoint" asp-action="Edit" asp-route-id="@endpoint.EndpointId"><i class="fa fa-pencil"></i> Edit</a>
                 </td>
-                <td>@endpoint.EndpointId</td>
                 <td>@endpoint.Method</td>
-                <td>@endpoint.Url</td>
+                <td>@(domain)@(endpoint.Url)</td>
+                <td>@endpoint.StatusCode</td>
                 <td>@endpoint.ResponseType</td>
             </tr>
         }
