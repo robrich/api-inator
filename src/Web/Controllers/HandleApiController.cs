@@ -121,7 +121,13 @@
                 return false; // PERF: regular site
             }
 
-            Endpoint endpoint = this.endpointRepository.GetMatch(subdomain, method, url);
+            Endpoint endpoint = null;
+            try {
+                endpoint = this.endpointRepository.GetMatch(subdomain, method, url);
+            } catch (Exception) {
+                // FRAGILE: swallow
+                endpoint = null;
+            }
 
             if (endpoint != null) {
                 values.Add("endpoint", endpoint);
