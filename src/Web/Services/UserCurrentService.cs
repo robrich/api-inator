@@ -50,7 +50,15 @@
                     return null;
                 }
                 int userId = 0;
-                if (!int.TryParse(this.GetUser().Identity.Name, out userId)) {
+                ClaimsPrincipal user = this.GetUser();
+                string naimClaim = ClaimTypes.NameIdentifier;
+                bool hasClaim = user.HasClaim(c => c.Type == naimClaim);
+                if (hasClaim) {
+                    if (!int.TryParse(user.FindFirst(c => c.Type == naimClaim).Value, out userId)) {
+                        userId = 0;
+                    }
+                }
+                if (userId < 1) {
                     return null;
                 }
                 return userId;
@@ -76,7 +84,7 @@
                 if (!this.IsAuthenticated) {
                     return null;
                 }
-                var user = this.GetUser();
+                ClaimsPrincipal user = this.GetUser();
                 const string githubNameKey = "urn:github:name";
                 bool hasClaim = user.HasClaim(c => c.Type == githubNameKey);
                 string name = null;
@@ -92,7 +100,7 @@
                 if (!this.IsAuthenticated) {
                     return null;
                 }
-                var user = this.GetUser();
+                ClaimsPrincipal user = this.GetUser();
                 const string githubNameKey = "urn:github:avitar";
                 bool hasClaim = user.HasClaim(c => c.Type == githubNameKey);
                 string name = null;
@@ -108,7 +116,7 @@
                 if (!this.IsAuthenticated) {
                     return false;
                 }
-                var user = this.GetUser();
+                ClaimsPrincipal user = this.GetUser();
                 return user.IsInRole("admin");
             }
         }

@@ -20,7 +20,15 @@
                 return null;
             }
             int userId = 0;
-            if (!int.TryParse(GetUser(HtmlHelper).Identity.Name, out userId)) {
+            ClaimsPrincipal user = GetUser(HtmlHelper);
+            string naimClaim = ClaimTypes.NameIdentifier;
+            bool hasClaim = user.HasClaim(c => c.Type == naimClaim);
+            if (hasClaim) {
+                if (!int.TryParse(user.FindFirst(c => c.Type == naimClaim).Value, out userId)) {
+                    userId = 0;
+                }
+            }
+            if (userId < 1) {
                 return null;
             }
             return userId;
@@ -30,7 +38,7 @@
             if (!HtmlHelper.IsAuthenticated()) {
                 return null;
             }
-            var user = GetUser(HtmlHelper);
+            ClaimsPrincipal user = GetUser(HtmlHelper);
             const string githubNameKey = "urn:github:name";
             bool hasClaim = user.HasClaim(c => c.Type == githubNameKey);
             string name = null;
@@ -44,7 +52,7 @@
             if (!HtmlHelper.IsAuthenticated()) {
                 return null;
             }
-            var user = GetUser(HtmlHelper);
+            ClaimsPrincipal user = GetUser(HtmlHelper);
             const string githubNameKey = "urn:github:avitar";
             bool hasClaim = user.HasClaim(c => c.Type == githubNameKey);
             string name = null;
